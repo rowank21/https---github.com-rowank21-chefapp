@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#003366', // Dark blue accent color
   },
-  description: {
+  description: { 
     fontSize: 16,
     color: '#003366', // Dark blue accent color
     textAlign: 'center',

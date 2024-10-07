@@ -11,7 +11,7 @@ export default function TabTwoScreen() {
         With over a decade of experience in the kitchen, Christophell has honed his skills in various 
         cuisines around the world. From mastering traditional Italian pasta to perfecting the art of 
         French pastry, his journey began in a small family kitchen where he learned to cook with love 
-        and passion. 
+        and passion.
       </Text>
       <Text style={styles.description}>
         Choosing Christophell as your chef means choosing quality, creativity, and a commitment to 

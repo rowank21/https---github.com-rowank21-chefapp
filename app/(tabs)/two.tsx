@@ -22,7 +22,7 @@ export default function TabTwoScreen() {
         For inquiries or feedback, contact us at:
       </Text>
       <Text style={styles.description}>
-        Phone: 082 875 9886
+        Phone: 082 875 9886 - unnavailable on sundays.
       </Text>
     </View>
   );

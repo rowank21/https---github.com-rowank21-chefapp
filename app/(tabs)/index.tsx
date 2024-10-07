@@ -211,3 +211,18 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+// REFERNCES:
+// React Native Documentation: Official guide and API references for React Native.
+// https://reactnative.dev/docs/getting-started
+
+// TypeScript Documentation: Comprehensive resources for using TypeScript in your projects.
+// https://www.typescriptlang.org/docs/
+
+// Expo Documentation: Detailed information on using Expo for React Native development.
+// https://docs.expo.dev/
+
+// React Navigation Documentation: Guides and API references for implementing navigation in React Native apps.
+// https://reactnavigation.org/docs/getting-started
+
+// Stack Overflow: A community-driven Q&A platform where you can find answers to specific coding questions.
+// https://stackoverflow.com/

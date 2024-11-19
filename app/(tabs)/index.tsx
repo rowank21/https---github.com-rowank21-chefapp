@@ -4,7 +4,7 @@ import { Picker } from '@react-native-picker/picker';
 import { RadioButton } from 'react-native-paper';
 
 
-const dishes = [
+const dishes = [ 
   { 
     name: 'Eggs Benedict', 
     description: 'English muffin, cut in half, toasted, and topped with Canadian bacon, poached eggs, and classic French hollandaise sauce.', 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, View, Text, TextInput, StyleSheet, Image } from 'react-native';
+import { ScrollView, View, Text, TextInput, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { RadioButton } from 'react-native-paper';
 
@@ -62,78 +62,43 @@ const dishes = [
 ];
 
 const App = () => {
-  const [selectedDish, setSelectedDish] = useState(dishes[0].name);
-  const [quantities, setQuantities] = useState({});
-  const [selectedCategory, setSelectedCategory] = useState("Breakfast"); 
+  // State to track quantities for each dish
+  const [quantities, setQuantities] = useState(dishes.map(() => 0));
 
-  const handleQuantityChange = (dishName, quantity) => {
-    const numQuantity = Math.max(0, parseInt(quantity) || 0);
-    setQuantities(prevQuantities => {
-      return {
-        ...prevQuantities,
-        [dishName]: numQuantity,
-      };
-    });
+  // Handler to update quantity when a dish is clicked
+  const handleDishClick = (index: number) => {
+    setQuantities((prevQuantities) =>
+      prevQuantities.map((qty, i) => (i === index ? qty + 1 : qty))
+    );
   };
 
-  const totalCost = Object.keys(quantities).reduce((sum, dishName) => {
-    const dishInfo = dishes.find(dish => dish.name === dishName);
-    return sum + (dishInfo ? dishInfo.price * quantities[dishName] : 0);
-  }, 0);
-
-  const filteredDishes = () => {
-    switch (selectedCategory) {
-      case "Breakfast":
-        return dishes.slice(0, 3); 
-      case "Lunch and Dinner":
-        return dishes.slice(3, 6); 
-      case "Drinks":
-        return dishes.slice(6, 9); 
-      default:
-        return dishes;
-    }
-  };
+  // Calculate the total price for all dishes
+  const totalPrice = quantities.reduce(
+    (total, qty, index) => total + qty * dishes[index].price,
+    0
+  );
 
   return (
     <ScrollView style={styles.container}>
-      <Picker
-        selectedValue={selectedCategory}
-        style={styles.picker}
-        onValueChange={(itemValue) => setSelectedCategory(itemValue)}
-      >
-        <Picker.Item label="Breakfast" value="Breakfast" />
-        <Picker.Item label="Lunch and Dinner" value="Lunch and Dinner" />
-        <Picker.Item label="speciality+Drinks" value="Drinks" />
-      </Picker>
-
-      <RadioButton.Group onValueChange={value => setSelectedDish(value)} value={selectedDish}>
-        {filteredDishes().map((dish) => (
-          <View key={dish.name} style={styles.radioContainer}>
-            <View style={styles.radioButtonRow}>
-              <RadioButton value={dish.name} color="#f5c74c" />
-              <Text style={styles.dishName}>{dish.name}</Text>
-            </View>
-            <View style={styles.dishDetails}>
-              <Image
-                source={{ uri: dish.image }} 
-                style={styles.dishImage}
-              />
-              <Text style={styles.dishDescription}>{dish.description}</Text>
-              <Text style={styles.dishPrice}>Price: R{dish.price.toFixed(2)}</Text>
-              <TextInput
-                style={styles.quantityInput}
-                placeholder="Quantity"
-                keyboardType="numeric"
-                value={quantities[dish.name]?.toString() || ''}
-                onChangeText={text => handleQuantityChange(dish.name, text)}
-              />
-            </View>
+      <Text style={styles.header}>Menu</Text>
+      {dishes.map((dish, index) => (
+        <TouchableOpacity
+          key={index}
+          style={styles.dishContainer}
+          onPress={() => handleDishClick(index)}
+        >
+          <Image source={{ uri: dish.image }} style={styles.image} />
+          <View style={styles.dishInfo}>
+            <Text style={styles.dishName}>{dish.name}</Text>
+            <Text style={styles.dishDescription}>{dish.description}</Text>
+            <Text style={styles.dishPrice}>R{dish.price.toFixed(2)}</Text>
+            <Text style={styles.quantity}>
+              Quantity: {quantities[index]} | Total: R{(quantities[index] * dish.price).toFixed(2)}
+            </Text>
           </View>
-        ))}
-      </RadioButton.Group>
-      <Text style={styles.selected}>Selected Dish: {selectedDish}</Text>
-      <Text style={styles.selected}>Quantity: {quantities[selectedDish] || 0}</Text>
-      <Text style={styles.totalCost}>Total Price: R{totalCost.toFixed(2)}</Text>
+        </TouchableOpacity>
+      ))}
+      <Text style={styles.total}>Grand Total: R{totalPrice.toFixed(2)}</Text>
     </ScrollView>
   );
 };
@@ -141,72 +106,59 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#FFDAB9', // Peach background
-  },
-  selected: {
-    marginTop: 20,
-    color: '#000000', // Black text for visibility
-    fontSize: 20,
-  },
-  totalCost: {
-    marginTop: 10,
-    fontSize: 18, 
-    color: '#FF4500',  // Orange-red for total cost
-    fontWeight: 'bold', 
-  },
-  radioContainer: {
-    marginBottom: 20, 
-  },
-  radioButtonRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F5DEB3', 
+    backgroundColor: '#fef5e7',
     padding: 10,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  dishContainer: {
+    flexDirection: 'row',
+    marginBottom: 20,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+    padding: 10,
+  },
+  image: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  dishInfo: {
+    flex: 1,
   },
   dishName: {
-    color: '#000000', 
-    fontWeight: 'bold',
     fontSize: 18,
-    marginLeft: 10, 
-    flex: 1, 
-  },
-  dishDetails: {
-    backgroundColor: '#F5DEB3',
-    padding: 10,
+    fontWeight: 'bold',
   },
   dishDescription: {
-    color: '#000000',
     fontSize: 14,
-    marginBottom: 5,
+    color: '#555',
+    marginVertical: 5,
   },
   dishPrice: {
-    color: '#000000',
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#007BFF',
+  },
+  quantity: {
     fontSize: 14,
-    marginBottom: 5,
+    color: '#333',
+    marginTop: 5,
   },
-  quantityInput: {
-    height: 40,
-    borderColor: '#FF4500', 
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    backgroundColor: '#ffffff', 
-    color: '#000000', 
-  },
-  dishImage: {
-    width: '100%',
-    height: 150,
-    resizeMode: 'cover',
-    marginBottom: 10,
-    borderRadius: 8, 
-  },
-  picker: {
-    height: 50,
-    width: 200,
-    color: '#000000', 
-    backgroundColor: '#FFDAB9', 
-    marginBottom: 20, 
+  total: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 20,
   },
 });
 
